@@ -22,6 +22,40 @@ const generateRef = () => {
   return ref;
 };
 
+const TYPE_LABELS: Record<string, string> = {
+  habitation: "Assurance Habitation",
+  professionnelle: "Multirisque Professionnelle",
+  pvt: "Violence Politique & Terrorisme",
+  auto: "Assurance Automobile",
+};
+
+// Sauvegarde le client dans localStorage pour le tableau de bord admin
+function saveClientToStorage(clientInfo: ClientInfo, insuranceType: string, matricule: string, extraData: Record<string, unknown>) {
+  const CLIENTS_KEY = "wairb_clients";
+  const raw = localStorage.getItem(CLIENTS_KEY);
+  let clients: unknown[] = [];
+  try { clients = raw ? JSON.parse(raw) : []; } catch { clients = []; }
+  const newClient = {
+    id: `cli_${Date.now()}`,
+    nom: clientInfo.nom,
+    email: clientInfo.email,
+    telephone: clientInfo.telephone,
+    adressePhysique: clientInfo.adressePhysique,
+    adressePostale: clientInfo.adressePostale,
+    domaineActivite: clientInfo.domaineActivite,
+    ville: clientInfo.ville,
+    pays: clientInfo.pays,
+    typeAssurance: insuranceType,
+    typeAssuranceLabel: TYPE_LABELS[insuranceType] || insuranceType,
+    matricule,
+    dateInscription: new Date().toISOString(),
+    statut: "en_attente",
+    detailsAssurance: extraData,
+  };
+  clients.unshift(newClient);
+  localStorage.setItem(CLIENTS_KEY, JSON.stringify(clients));
+}
+
 const MultiStepForm = ({ open, onClose, preselectedType }: MultiStepFormProps) => {
   const [step, setStep] = useState(1);
   const [clientInfo, setClientInfo] = useState<ClientInfo>({
@@ -37,11 +71,13 @@ const MultiStepForm = ({ open, onClose, preselectedType }: MultiStepFormProps) =
     setStep(3);
   }, []);
 
-  const handleSubmit = useCallback((_data: Record<string, unknown>) => {
+  const handleSubmit = useCallback((data: Record<string, unknown>) => {
     const ref = generateRef();
     setRefNumber(ref);
     setSubmitted(true);
-  }, []);
+    // 🔗 Connexion dashboard admin — sauvegarde dans localStorage
+    saveClientToStorage(clientInfo, insuranceType, ref, data);
+  }, [clientInfo, insuranceType]);
 
   const resetForm = useCallback(() => {
     setStep(1);
