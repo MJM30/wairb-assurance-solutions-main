@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react';
+import { setAdminRole, type AdminRole } from '../lib/storage';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,8 +16,15 @@ export default function Login() {
     setError('');
     setLoading(true);
     setTimeout(() => {
-      if (email === 'admin@wairbdrc.com' && password === 'Wairb@2024') {
+      let role: AdminRole | null = null;
+      if (email === 'admin@wairbdrc.com' && password === 'Wairb@2024') role = 'admin';
+      else if (email === 'percepteur@wairbdrc.com' && password === 'Wairb@2024') role = 'percepteur';
+      else if (email === 'financier@wairbdrc.com' && password === 'Wairb@2024') role = 'financier';
+
+      if (role) {
         localStorage.setItem('wairb_admin_auth', 'true');
+        setAdminRole(role);
+        // By default send to dashboard. We will redirect in App.tsx if needed
         navigate('/');
       } else {
         setError('Email ou mot de passe incorrect.');
@@ -181,9 +189,11 @@ export default function Login() {
           borderRadius: 8,
           fontSize: 11,
           color: 'var(--text-muted)',
+          display: 'flex', flexDirection: 'column', gap: 6
         }}>
-          <strong style={{ color: 'var(--text-secondary)' }}>Démo :</strong>
-          {' '}admin@wairbdrc.com / Wairb@2024
+          <div><strong style={{ color: 'var(--text-secondary)' }}>Admin :</strong> admin@wairbdrc.com / Wairb@2024</div>
+          <div><strong style={{ color: 'var(--text-secondary)' }}>Percepteur :</strong> percepteur@wairbdrc.com / Wairb@2024</div>
+          <div><strong style={{ color: 'var(--text-secondary)' }}>Financier :</strong> financier@wairbdrc.com / Wairb@2024</div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -6,9 +6,10 @@ import {
 } from 'recharts';
 import {
   Users, CheckCircle, Clock, DollarSign,
-  TrendingUp, Eye, ArrowRight, Home, Car, Building2, AlertTriangle,
+  TrendingUp, Eye, ArrowRight, Home, Car, Building2, AlertTriangle, Download,
 } from 'lucide-react';
 import { getAllClients, getVisitorHistory, getTodayVisitors, getMontantByType } from '../lib/storage';
+import ExportModal from '../components/ExportModal';
 
 const COLORS: Record<string, string> = {
   habitation: '#16c784',
@@ -72,6 +73,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [showExport, setShowExport] = useState(false);
   const clients = useMemo(() => getAllClients(), []);
   const visitors = useMemo(() => getVisitorHistory(), []);
   const todayVisitors = getTodayVisitors();
@@ -115,6 +117,12 @@ export default function Dashboard() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -8 }}>
+        <button className="btn btn-outline" style={{ background: 'var(--bg-card)', height: 38 }} onClick={() => setShowExport(true)}>
+          <Download size={15} /> Exporter Rapport PDF
+        </button>
+      </div>
+
       {/* KPI Cards */}
       <div className="grid-4">
         <StatCard
@@ -324,6 +332,7 @@ export default function Dashboard() {
           })}
         </div>
       </div>
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { CheckCircle, Search, Eye, Home, Car, Building2, AlertTriangle, Users, X, Mail, Phone, MapPin, Calendar, CreditCard } from 'lucide-react';
-import { getAllClients, updateClientPayment, WairbClient } from '../lib/storage';
+import { getAllClients, updateClientPayment, type WairbClient } from '../lib/storage';
 
 const COLORS: Record<string, string> = { habitation: '#16c784', auto: '#3b82f6', professionnelle: '#f59e0b', pvt: '#ef4444' };
 const TYPE_ICONS: Record<string, React.ElementType> = { habitation: Home, auto: Car, professionnelle: Building2, pvt: AlertTriangle };

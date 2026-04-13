@@ -1,6 +1,5 @@
-/* WAIRB Admin Dashboard — Design System */
 @import "tailwindcss";
-
+/* WAIRB Admin Dashboard — Design System */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
@@ -263,3 +262,34 @@ html, body, #root {
 @media (max-width: 768px) {
   .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
 }
+
+/* Print Styles for PDF Export */
+@media screen {
+  #print-report {
+    display: none !important;
+  }
+}
+
+@media print {
+  #root {
+    display: none !important;
+  }
+  .modal-overlay {
+    display: none !important;
+  }
+  body, html {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #print-report {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    background: white !important;
+  }
+  @page {
+    margin: 10mm;
+  }
+}
+

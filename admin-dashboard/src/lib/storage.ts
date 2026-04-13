@@ -2,6 +2,24 @@
 // WAIRB Admin — Shared Storage Utilities (localStorage bridge)
 // ============================================================
 
+export type AdminRole = 'admin' | 'percepteur' | 'financier';
+
+export function getAdminRole(): AdminRole {
+  return (localStorage.getItem('wairb_admin_role') as AdminRole) || 'admin';
+}
+
+export function setAdminRole(role: AdminRole): void {
+  localStorage.setItem('wairb_admin_role', role);
+}
+
+export function generateMatricule(typeId: string): string {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const r1 = Math.floor(Math.random() * 9000) + 1000;
+  const r2 = letters[Math.floor(Math.random() * letters.length)];
+  const pre = typeId === 'habitation' ? 'HA' : typeId === 'auto' ? 'AU' : typeId === 'professionnelle' ? 'PR' : 'PV';
+  return `WAIRB-${pre}${r1}${r2}`;
+}
+
 export interface WairbClient {
   id: string;
   nom: string;

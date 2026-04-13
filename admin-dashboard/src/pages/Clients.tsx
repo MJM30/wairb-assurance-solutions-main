@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import {
   Search, Filter, Eye, Home, Car, Building2, AlertTriangle,
-  Users, X, Mail, Phone, MapPin, Calendar, CreditCard, CheckCircle, Clock
+  Users, X, Mail, Phone, MapPin, Calendar, CreditCard, CheckCircle, Clock, Edit2, Save, UserPlus
 } from 'lucide-react';
-import { getAllClients, updateClientPayment, WairbClient, getMontantByType } from '../lib/storage';
+import { getAllClients, updateClientPayment, saveClient, type WairbClient, getMontantByType, getAdminRole } from '../lib/storage';
+import NewClientModal from '../components/NewClientModal';
 
 const COLORS: Record<string, string> = {
   habitation: '#16c784', auto: '#3b82f6', professionnelle: '#f59e0b', pvt: '#ef4444',
@@ -26,14 +27,26 @@ function ClientModal({ client, onClose, onRefresh }: { client: WairbClient; onCl
     }, 600);
   }
 
+  const role = getAdminRole();
+  const readonly = role === 'financier';
+  const canEdit = role === 'admin' || role === 'percepteur';
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState<WairbClient>(client);
+
+  function handleSave() {
+    saveClient(editForm);
+    setIsEditing(false);
+    onRefresh();
+  }
+
   const infoRows = [
-    { icon: Mail, label: 'Adresse email', value: client.email },
-    { icon: Phone, label: 'Téléphone', value: client.telephone },
-    { icon: MapPin, label: 'Adresse physique', value: client.adressePhysique || '—' },
-    { icon: MapPin, label: 'Adresse postale', value: client.adressePostale || '—' },
-    { icon: Building2, label: "Domaine d'activité", value: client.domaineActivite || '—' },
-    { icon: MapPin, label: 'Ville / Pays', value: `${client.ville}, ${client.pays}` },
-    { icon: Calendar, label: "Date d'inscription", value: new Date(client.dateInscription).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) },
+    { key: 'email', icon: Mail, label: 'Adresse email', value: editForm.email },
+    { key: 'telephone', icon: Phone, label: 'Téléphone', value: editForm.telephone },
+    { key: 'adressePhysique', icon: MapPin, label: 'Adresse physique', value: editForm.adressePhysique || '—' },
+    { key: 'ville', icon: MapPin, label: 'Ville', value: editForm.ville },
+    { key: 'domaineActivite', icon: Building2, label: "Domaine d'activité", value: editForm.domaineActivite || '—' },
+    { key: 'dateInscription', icon: Calendar, label: "Date d'inscription", value: new Date(client.dateInscription).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }), readonly: true },
   ];
 
   return (
@@ -54,16 +67,30 @@ function ClientModal({ client, onClose, onRefresh }: { client: WairbClient; onCl
               <Icon size={20} color={color} />
             </div>
             <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>{client.nom}</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                {isEditing ? <input className="input" style={{ height: 26, padding: '0 8px', fontSize: 14 }} value={editForm.nom} onChange={e => setEditForm({...editForm, nom: e.target.value})} /> : client.nom}
+              </h2>
               <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{client.typeAssuranceLabel}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4, borderRadius: 6 }}
-          >
-            <X size={18} />
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {!isEditing && canEdit && (
+              <button onClick={() => setIsEditing(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
+                <Edit2 size={14} /> Modifier
+              </button>
+            )}
+            {isEditing && (
+              <button onClick={handleSave} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#16a34a', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
+                <Save size={14} /> Enregistrer
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4, borderRadius: 6 }}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -87,14 +114,18 @@ function ClientModal({ client, onClose, onRefresh }: { client: WairbClient; onCl
 
           {/* Info rows */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {infoRows.map(({ icon: RowIcon, label, value }) => (
+            {infoRows.map(({ key, icon: RowIcon, label, value, readonly }) => (
               <div key={label} style={{
                 display: 'flex', alignItems: 'center', gap: 12,
                 padding: '10px 0', borderBottom: '1px solid var(--border)',
               }}>
                 <RowIcon size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                 <span style={{ fontSize: 12, color: 'var(--text-muted)', width: 140, flexShrink: 0 }}>{label}</span>
-                <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 500 }}>{value}</span>
+                {isEditing && !readonly ? (
+                  <input className="input" style={{ height: 26, padding: '0 8px', fontSize: 12, flex: 1 }} value={value} onChange={e => setEditForm({...editForm, [key]: e.target.value})} />
+                ) : (
+                  <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 500 }}>{value}</span>
+                )}
               </div>
             ))}
           </div>
@@ -118,16 +149,50 @@ function ClientModal({ client, onClose, onRefresh }: { client: WairbClient; onCl
             </div>
           )}
 
+          {/* Détails spécifiques assurance */}
+          {client.detailsAssurance && Object.keys(client.detailsAssurance).length > 0 && (
+            <div style={{ marginTop: 8 }}>
+              <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Détails du questionnaire
+              </h3>
+              <div style={{ 
+                background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 10, padding: 16,
+                display: 'grid', gridTemplateColumns: '1fr', gap: 12
+              }}>
+                {Object.entries(client.detailsAssurance).map(([key, value]) => {
+                  if (typeof value === 'boolean' || !value || (Array.isArray(value) && value.length === 0)) return null;
+                  
+                  // Formattage du label (CamelCase vers espace)
+                  const label = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+                  const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
+
+                  return (
+                    <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'capitalize' }}>
+                        {label}
+                      </span>
+                      <span style={{ fontSize: 12, color: 'var(--text-primary)' }}>
+                        {displayValue}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Action button */}
-          <button
-            className={`btn ${client.statut === 'paye' ? 'btn-outline' : 'btn-primary'}`}
-            onClick={togglePayment}
-            disabled={saving}
-            style={{ justifyContent: 'center', height: 42 }}
-          >
-            <CreditCard size={15} />
-            {saving ? 'Mise à jour...' : client.statut === 'paye' ? 'Annuler le paiement' : `Marquer comme payé — $${getMontantByType(client.typeAssurance)} USD`}
-          </button>
+          {!readonly && (
+            <button
+              className={`btn ${client.statut === 'paye' ? 'btn-outline' : 'btn-primary'}`}
+              onClick={togglePayment}
+              disabled={saving}
+              style={{ justifyContent: 'center', height: 42 }}
+            >
+              <CreditCard size={15} />
+              {saving ? 'Mise à jour...' : client.statut === 'paye' ? 'Annuler le paiement' : `Marquer comme payé — $${getMontantByType(client.typeAssurance)} USD`}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -135,10 +200,12 @@ function ClientModal({ client, onClose, onRefresh }: { client: WairbClient; onCl
 }
 
 export default function Clients() {
+  const role = getAdminRole();
   const [clients, setClients] = useState(() => getAllClients());
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<'all' | 'paye' | 'en_attente'>('all');
+  const [filter, setFilter] = useState<'all' | 'paye' | 'en_attente'>(role === 'percepteur' ? 'en_attente' : 'all');
   const [selected, setSelected] = useState<WairbClient | null>(null);
+  const [showNew, setShowNew] = useState(false);
 
   function refresh() {
     setClients(getAllClients());
@@ -175,6 +242,13 @@ export default function Clients() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Nouveau Client Btn */}
+          {(role === 'admin' || role === 'percepteur') && (
+            <button className="btn btn-primary" style={{ height: 36, padding: '0 12px' }} onClick={() => setShowNew(true)}>
+              <UserPlus size={14} /> Nouveau client
+            </button>
+          )}
+
           {/* Search */}
           <div style={{ position: 'relative' }}>
             <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -187,23 +261,25 @@ export default function Clients() {
             />
           </div>
           {/* Filter tabs */}
-          <div style={{ display: 'flex', gap: 4, background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: 3 }}>
-            {filters.map(f => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                style={{
-                  padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600,
-                  border: 'none', cursor: 'pointer',
-                  background: filter === f.key ? 'var(--accent)' : 'transparent',
-                  color: filter === f.key ? '#000' : 'var(--text-muted)',
-                  transition: 'all 0.15s',
-                }}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+          {role !== 'percepteur' && (
+            <div style={{ display: 'flex', gap: 4, background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: 3 }}>
+              {filters.map(f => (
+                <button
+                  key={f.key}
+                  onClick={() => setFilter(f.key)}
+                  style={{
+                    padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600,
+                    border: 'none', cursor: 'pointer',
+                    background: filter === f.key ? 'var(--accent)' : 'transparent',
+                    color: filter === f.key ? '#000' : 'var(--text-muted)',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -287,10 +363,9 @@ export default function Clients() {
         </div>
       </div>
 
-      {/* Modal */}
-      {selected && (
-        <ClientModal client={selected} onClose={() => setSelected(null)} onRefresh={refresh} />
-      )}
+      {/* Modals */}
+      {selected && <ClientModal client={selected} onClose={() => setSelected(null)} onRefresh={refresh} />}
+      {showNew && <NewClientModal onClose={() => setShowNew(false)} onRefresh={refresh} />}
     </div>
   );
 }

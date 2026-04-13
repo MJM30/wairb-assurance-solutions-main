@@ -3,19 +3,29 @@ import {
   LayoutDashboard, Users, CheckCircle, BarChart3,
   Handshake, Wallet, Activity, LogOut, Shield,
 } from 'lucide-react';
+import { getAdminRole } from '../lib/storage';
 
-const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Tableau de bord', end: true },
-  { to: '/clients', icon: Users, label: 'Tous les clients' },
-  { to: '/clients-payes', icon: CheckCircle, label: 'Clients payés' },
-  { to: '/assurances', icon: BarChart3, label: 'Assurances' },
-  { to: '/partenaires', icon: Handshake, label: 'Partenaires' },
-  { to: '/budget', icon: Wallet, label: 'Budget' },
-  { to: '/visiteurs', icon: Activity, label: 'Visiteurs' },
+const allNavItems = [
+  { to: '/', icon: LayoutDashboard, label: 'Tableau de bord', end: true, roles: ['admin', 'financier'] },
+  { to: '/clients', icon: Users, label: 'Tous les clients', roles: ['admin', 'percepteur'] },
+  { to: '/clients-payes', icon: CheckCircle, label: 'Clients payés', roles: ['admin', 'financier'] },
+  { to: '/assurances', icon: BarChart3, label: 'Assurances', roles: ['admin', 'financier'] },
+  { to: '/partenaires', icon: Handshake, label: 'Partenaires', roles: ['admin'] },
+  { to: '/budget', icon: Wallet, label: 'Budget', roles: ['admin', 'financier'] },
+  { to: '/visiteurs', icon: Activity, label: 'Visiteurs', roles: ['admin'] },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const role = getAdminRole();
+  const navItems = allNavItems.filter(item => item.roles.includes(role));
+
+  const roleLabels: Record<string, string> = {
+    admin: 'Administrateur', percepteur: 'Percepteur (Caissier)', financier: 'Financier'
+  };
+  const roleMails: Record<string, string> = {
+    admin: 'admin@wairbdrc.com', percepteur: 'percepteur@wairbdrc.com', financier: 'financier@wairbdrc.com'
+  };
 
   function handleLogout() {
     localStorage.removeItem('wairb_admin_auth');
@@ -91,10 +101,10 @@ export default function Sidebar() {
               borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 13, fontWeight: 700, color: '#000',
-            }}>A</div>
+            }}>{roleLabels[role]?.[0] || 'A'}</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>Administrateur</div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>admin@wairbdrc.com</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{roleLabels[role]}</div>
+              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{roleMails[role]}</div>
             </div>
           </div>
         </div>

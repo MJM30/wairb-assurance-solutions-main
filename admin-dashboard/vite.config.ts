@@ -5,6 +5,11 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  css: {
+    postcss: {
+      plugins: [], // Désactive les plugins PostCSS venant du dossier parent (Tailwind 3)
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

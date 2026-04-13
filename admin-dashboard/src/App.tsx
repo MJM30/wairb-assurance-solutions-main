@@ -8,6 +8,7 @@ import Insurance from './pages/Insurance';
 import Partners from './pages/Partners';
 import Budget from './pages/Budget';
 import Visitors from './pages/Visitors';
+import { getAdminRole } from './lib/storage';
 
 function isAuthenticated() {
   return localStorage.getItem('wairb_admin_auth') === 'true';
@@ -15,6 +16,12 @@ function isAuthenticated() {
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   return isAuthenticated() ? <>{children}</> : <Navigate to="/login" replace />;
+}
+
+function IndexRoute() {
+  const role = getAdminRole();
+  if (role === 'percepteur') return <Navigate to="/clients" replace />;
+  return <Dashboard />;
 }
 
 export default function App() {
@@ -30,7 +37,7 @@ export default function App() {
             </PrivateRoute>
           }
         >
-          <Route index element={<Dashboard />} />
+          <Route index element={<IndexRoute />} />
           <Route path="clients" element={<Clients />} />
           <Route path="clients-payes" element={<PaidClients />} />
           <Route path="assurances" element={<Insurance />} />
