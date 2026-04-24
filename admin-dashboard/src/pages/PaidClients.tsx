@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { CheckCircle, Search, Eye, Home, Car, Building2, AlertTriangle, Users, X, Mail, Phone, MapPin, Calendar, CreditCard } from 'lucide-react';
+import { CheckCircle, Search, Eye, Home, Car, Building2, AlertTriangle, Users, X, Mail, Phone, MapPin, Calendar, CreditCard, Sparkles } from 'lucide-react';
 import { getAllClients, updateClientPayment, type WairbClient } from '../lib/storage';
+import EmailAIAgent from '../components/EmailAIAgent';
 
 const COLORS: Record<string, string> = { habitation: '#16c784', auto: '#3b82f6', professionnelle: '#f59e0b', pvt: '#ef4444' };
 const TYPE_ICONS: Record<string, React.ElementType> = { habitation: Home, auto: Car, professionnelle: Building2, pvt: AlertTriangle };
 
-function PaidClientModal({ client, onClose, onRefresh }: { client: WairbClient; onClose: () => void; onRefresh: () => void }) {
+function PaidClientModal({ client, onClose, onRefresh, onOpenAI }: { client: WairbClient; onClose: () => void; onRefresh: () => void; onOpenAI: (c: WairbClient) => void }) {
   const [saving, setSaving] = useState(false);
   const Icon = TYPE_ICONS[client.typeAssurance] || Users;
   const color = COLORS[client.typeAssurance] || '#3b82f6';
@@ -58,9 +59,14 @@ function PaidClientModal({ client, onClose, onRefresh }: { client: WairbClient; 
             </div>
             <p style={{ fontSize: 24, fontWeight: 800, color: 'var(--accent)' }}>${client.montantPaye?.toLocaleString()} USD</p>
           </div>
-          <button className="btn btn-outline" onClick={cancelPayment} disabled={saving} style={{ justifyContent: 'center', height: 40 }}>
-            <CreditCard size={14} /> {saving ? 'Annulation...' : 'Annuler le paiement'}
-          </button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="btn btn-primary" onClick={() => onOpenAI(client)} style={{ flex: 1, height: 40, gap: 8 }}>
+              <Sparkles size={14} color="#000" /> Rédiger E-mail (AI)
+            </button>
+            <button className="btn btn-outline" onClick={cancelPayment} disabled={saving} style={{ flex: 1, height: 40, gap: 8 }}>
+              <CreditCard size={14} /> {saving ? 'Annulation...' : 'Annuler'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +77,7 @@ export default function PaidClients() {
   const [clients, setClients] = useState(() => getAllClients());
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<WairbClient | null>(null);
+  const [aiClient, setAiClient] = useState<WairbClient | null>(null);
 
   const paidClients = useMemo(() => clients.filter(c => c.statut === 'paye'), [clients]);
   const filtered = useMemo(() => paidClients.filter(c =>
@@ -162,7 +169,8 @@ export default function PaidClients() {
           </tbody>
         </table>
       </div>
-      {selected && <PaidClientModal client={selected} onClose={() => setSelected(null)} onRefresh={refresh} />}
+      {selected && <PaidClientModal client={selected} onClose={() => setSelected(null)} onRefresh={refresh} onOpenAI={(c) => { setSelected(null); setAiClient(c); }} />}
+      {aiClient && <EmailAIAgent client={aiClient} onClose={() => setAiClient(null)} />}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import PaidClients from './pages/PaidClients';
 import Insurance from './pages/Insurance';
 import Partners from './pages/Partners';
 import Budget from './pages/Budget';
+import Expenses from './pages/Expenses';
 import Visitors from './pages/Visitors';
 import { getAdminRole } from './lib/storage';
 
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="assurances" element={<Insurance />} />
           <Route path="partenaires" element={<Partners />} />
           <Route path="budget" element={<Budget />} />
+          <Route path="expenses" element={<Expenses />} />
           <Route path="visiteurs" element={<Visitors />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

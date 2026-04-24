@@ -11,7 +11,8 @@ const allNavItems = [
   { to: '/clients-payes', icon: CheckCircle, label: 'Clients payés', roles: ['admin', 'financier'] },
   { to: '/assurances', icon: BarChart3, label: 'Assurances', roles: ['admin', 'financier'] },
   { to: '/partenaires', icon: Handshake, label: 'Partenaires', roles: ['admin'] },
-  { to: '/budget', icon: Wallet, label: 'Budget', roles: ['admin', 'financier'] },
+  { to: '/budget', icon: Wallet, label: 'Revenus', roles: ['admin', 'financier'] },
+  { to: '/expenses', icon: Activity, label: 'Dépenses', roles: ['admin', 'financier'] },
   { to: '/visiteurs', icon: Activity, label: 'Visiteurs', roles: ['admin'] },
 ];
 
@@ -26,6 +27,11 @@ export default function Sidebar() {
   const roleMails: Record<string, string> = {
     admin: 'admin@wairbdrc.com', percepteur: 'percepteur@wairbdrc.com', financier: 'financier@wairbdrc.com'
   };
+  const userNames: Record<string, string> = {
+    admin: 'Fleury Ngoma',
+    percepteur: 'Moïse Kapend',
+    financier: 'Chantal Mboyo'
+  };
 
   function handleLogout() {
     localStorage.removeItem('wairb_admin_auth');
@@ -35,7 +41,7 @@ export default function Sidebar() {
   return (
     <aside style={{
       width: 'var(--sidebar-width)',
-      background: 'var(--bg-secondary)',
+      background: 'var(--bg-card)',
       borderRight: '1px solid var(--border)',
       display: 'flex',
       flexDirection: 'column',
@@ -47,22 +53,16 @@ export default function Sidebar() {
         padding: '20px 16px 16px',
         borderBottom: '1px solid var(--border)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center' }}>
           <div style={{
-            width: 36, height: 36,
-            background: 'var(--accent)',
-            borderRadius: 10,
+            width: '100%',
+            height: 60,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Shield size={20} color="#000" />
+            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              WAIRB
-            </div>
-            <div style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Administration
-            </div>
+          <div style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+            Administration
           </div>
         </div>
       </div>
@@ -97,14 +97,14 @@ export default function Sidebar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{
               width: 32, height: 32,
-              background: 'linear-gradient(135deg, var(--accent), #0d9e6a)',
+              background: 'var(--accent)',
               borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 13, fontWeight: 700, color: '#000',
+              fontSize: 13, fontWeight: 700, color: '#fff',
             }}>{roleLabels[role]?.[0] || 'A'}</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{roleLabels[role]}</div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{roleMails[role]}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{userNames[role]}</div>
+              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{roleLabels[role]}</div>
             </div>
           </div>
         </div>

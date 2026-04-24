@@ -46,18 +46,20 @@ export default function Login() {
     }}>
       {/* Background blobs */}
       <div style={{
-        position: 'absolute', top: '-20%', right: '-10%',
+        position: 'absolute', top: '-10%', right: '-5%',
         width: 600, height: 600,
-        background: 'radial-gradient(circle, rgba(22,199,132,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, var(--accent-bg) 0%, transparent 70%)',
         borderRadius: '50%',
         pointerEvents: 'none',
+        opacity: 0.5,
       }} />
       <div style={{
-        position: 'absolute', bottom: '-20%', left: '-10%',
+        position: 'absolute', bottom: '-10%', left: '-5%',
         width: 500, height: 500,
-        background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, var(--info-bg) 0%, transparent 70%)',
         borderRadius: '50%',
         pointerEvents: 'none',
+        opacity: 0.5,
       }} />
 
       <div style={{
@@ -66,21 +68,19 @@ export default function Login() {
         background: 'var(--bg-card)',
         border: '1px solid var(--border)',
         borderRadius: 20,
-        boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+        boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)',
         position: 'relative',
         animation: 'fadeInUp 0.5s ease',
       }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
-            width: 64, height: 64,
-            background: 'linear-gradient(135deg, var(--accent), #0d9e6a)',
-            borderRadius: 18,
+            width: '100%',
+            height: 100,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px',
-            boxShadow: '0 8px 24px rgba(22,199,132,0.3)',
+            margin: '0 auto 24px',
           }}>
-            <Shield size={30} color="#000" />
+            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <h1 style={{
             fontSize: 22, fontWeight: 800,

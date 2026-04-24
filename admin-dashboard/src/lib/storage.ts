@@ -47,6 +47,37 @@ export interface VisitorRecord {
 
 const CLIENTS_KEY = 'wairb_clients';
 const VISITORS_KEY = 'wairb_visitors';
+const EXPENSES_KEY = 'wairb_expenses';
+const BUDGETS_KEY = 'wairb_expense_budgets';
+const INSURER_EMAIL_KEY = 'wairb_insurer_email';
+
+export type ExpenseCategory = 'salaire' | 'carburant' | 'deplacement' | 'loyer' | 'marketing' | 'logistique' | 'maintenance' | 'divers';
+
+export interface ExpenseAttachment {
+  name: string;
+  type: string;
+  data: string; // Base64
+}
+
+export interface Expense {
+  id: string;
+  date: string;
+  amount: number;
+  category: ExpenseCategory;
+  disburserName: string;
+  recipientName: string;
+  justification: string;
+  attachment?: ExpenseAttachment;
+  createdAt: string;
+  status: 'effectue' | 'annule';
+}
+
+export interface ExpenseBudget {
+  month: string; // "MM" (01-12)
+  year: string;  // "YYYY"
+  category: ExpenseCategory;
+  amount: number;
+}
 
 // ─── Clients ────────────────────────────────────────────────
 
@@ -142,14 +173,93 @@ export function getTypeLabel(id: string): string {
   return map[id] ?? id;
 }
 
+export function getCategoryLabel(cat: ExpenseCategory): string {
+  const map: Record<ExpenseCategory, string> = {
+    salaire: 'Salaire & Personnel',
+    carburant: 'Carburant / Véhicules',
+    deplacement: 'Déplacement Pro',
+    loyer: 'Loyer / Bureau',
+    marketing: 'Marketing / Pub',
+    logistique: 'Logistique / Envoi',
+    maintenance: 'Maintenance / Réparation',
+    divers: 'Divers / Imprévus'
+  };
+  return map[cat] ?? cat;
+}
+
+// ─── Expenses ────────────────────────────────────────────────
+
+export function getAllExpenses(): Expense[] {
+  const raw = localStorage.getItem(EXPENSES_KEY);
+  if (!raw) return getDefaultExpenses();
+  try {
+    return JSON.parse(raw) as Expense[];
+  } catch { return getDefaultExpenses(); }
+}
+
+export function saveExpense(expense: Expense): void {
+  const expenses = getAllExpenses();
+  const idx = expenses.findIndex(e => e.id === expense.id);
+  if (idx >= 0) {
+    // Preserve createdAt if updating
+    const existing = expenses[idx];
+    expenses[idx] = { ...expense, createdAt: existing.createdAt };
+  } else {
+    expenses.unshift(expense);
+  }
+  localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+}
+
+export function cancelExpense(id: string): void {
+  const expenses = getAllExpenses();
+  const idx = expenses.findIndex(e => e.id === id);
+  if (idx >= 0) {
+    expenses[idx].status = 'annule';
+    localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+  }
+}
+
+export function deleteExpense(id: string): void {
+  const expenses = getAllExpenses().filter(e => e.id !== id);
+  localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+}
+
+// ─── Expense Budgets ─────────────────────────────────────────
+
+export function getAllExpenseBudgets(): ExpenseBudget[] {
+  const raw = localStorage.getItem(BUDGETS_KEY);
+  if (!raw) return getDefaultBudgets();
+  try {
+    return JSON.parse(raw) as ExpenseBudget[];
+  } catch { return getDefaultBudgets(); }
+}
+
+export function saveExpenseBudget(budget: ExpenseBudget): void {
+  const budgets = getAllExpenseBudgets();
+  const idx = budgets.findIndex(b => b.month === budget.month && b.year === budget.year && b.category === budget.category);
+  if (idx >= 0) budgets[idx] = budget;
+  else budgets.push(budget);
+  localStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets));
+}
+
+// ─── Insurer Email ──────────────────────────────────────────
+
+export function getInsurerEmail(): string {
+  return localStorage.getItem(INSURER_EMAIL_KEY) || "partenaires@wairb-assurances.com";
+}
+
+export function saveInsurerEmail(email: string): void {
+  localStorage.setItem(INSURER_EMAIL_KEY, email);
+}
+
 // ─── Mock Data (pre-populated for demo) ──────────────────────
 
 function getDefaultClients(): WairbClient[] {
   const clients: WairbClient[] = [
     {
       id: 'cli_001',
-      nom: 'Jean-Pierre Mukendi',
-      email: 'jp.mukendi@gmail.com',
+      nom: 'Dieudonné Kalala',
+      email: 'd.kalala@gmail.com',
       telephone: '+243 823 456 789',
       adressePhysique: 'Avenue Colonel Ebeya, Kinshasa',
       adressePostale: 'BP 12345',
@@ -166,8 +276,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_002',
-      nom: 'Marie-Claire Kabila',
-      email: 'mkabila@outlook.com',
+      nom: 'Alphonsine Mambweni',
+      email: 'amambweni@outlook.com',
       telephone: '+243 815 234 567',
       adressePhysique: 'Quartier Matonge, Kalamu',
       adressePostale: 'BP 6789',
@@ -184,8 +294,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_003',
-      nom: 'Patrick Ilunga',
-      email: 'pat.ilunga@yahoo.fr',
+      nom: 'Fiston Mayele',
+      email: 'f.mayele@yahoo.fr',
       telephone: '+243 991 345 678',
       adressePhysique: 'Avenue Bischoff, Lubumbashi',
       adressePostale: 'BP 2233',
@@ -202,8 +312,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_004',
-      nom: 'Solange Mbuyi',
-      email: 'sol.mbuyi@gmail.com',
+      nom: 'Divine Kasinga',
+      email: 'divine.k@gmail.com',
       telephone: '+243 775 567 890',
       adressePhysique: 'Boulevard du 30 Juin, Gombe',
       adressePostale: 'BP 4410',
@@ -218,8 +328,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_005',
-      nom: 'Emmanuel Tshisekedi',
-      email: 'em.tshi@corp.cd',
+      nom: 'Christian Luyindama',
+      email: 'c.luyindama@corp.cd',
       telephone: '+243 843 678 901',
       adressePhysique: 'Quartier Golf, Kinshasa',
       adressePostale: 'BP 9900',
@@ -234,8 +344,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_006',
-      nom: 'Claudine Nzuzi',
-      email: 'cl.nzuzi@gmail.com',
+      nom: 'Grâce Mutombo',
+      email: 'g.mutombo@gmail.com',
       telephone: '+243 851 789 012',
       adressePhysique: 'Commune de Ngaliema, Kinshasa',
       adressePostale: 'BP 7712',
@@ -252,8 +362,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_007',
-      nom: 'Bienvenu Kasongo',
-      email: 'b.kasongo@hotmail.com',
+      nom: 'Junior Malanda',
+      email: 'j.malanda@hotmail.com',
       telephone: '+243 899 890 123',
       adressePhysique: 'Avenue Tabora, Kinshasa',
       adressePostale: 'BP 3390',
@@ -268,8 +378,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_008',
-      nom: 'Joséphine Mwamba',
-      email: 'j.mwamba@gmail.com',
+      nom: 'Falonne Bompoko',
+      email: 'f.bompoko@gmail.com',
       telephone: '+243 817 901 234',
       adressePhysique: 'Quartier Bilima, Lubumbashi',
       adressePostale: 'BP 5501',
@@ -286,8 +396,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_009',
-      nom: 'Roger Banza',
-      email: 'r.banza@yahoo.fr',
+      nom: 'Trésor Mputu',
+      email: 't.mputu@yahoo.fr',
       telephone: '+243 978 012 345',
       adressePhysique: 'Avenue Plateau, Goma',
       adressePostale: 'BP 8823',
@@ -304,8 +414,8 @@ function getDefaultClients(): WairbClient[] {
     },
     {
       id: 'cli_010',
-      nom: 'Nathalie Lokota',
-      email: 'n.lokota@gmail.com',
+      nom: 'Symphorien Kibibi',
+      email: 's.kibibi@gmail.com',
       telephone: '+243 824 123 456',
       adressePhysique: 'Avenue des Aviateurs, Gombe',
       adressePostale: 'BP 6645',
@@ -338,4 +448,67 @@ function getDefaultVisitors(): VisitorRecord[] {
   records[records.length - 1].count = Math.floor(Math.random() * 40) + 10;
   localStorage.setItem(VISITORS_KEY, JSON.stringify(records));
   return records;
+}
+
+function getDefaultExpenses(): Expense[] {
+  const now = new Date();
+  const monthStr = (now.getMonth() + 1).toString().padStart(2, '0');
+  const yearStr = now.getFullYear().toString();
+
+  const expenses: Expense[] = [
+    {
+      id: 'exp_001',
+      date: `${yearStr}-${monthStr}-05`,
+      amount: 1500,
+      category: 'salaire',
+      disburserName: 'Admin Principal',
+      recipientName: 'Jean Dupont',
+      justification: 'Paiement salaire mensuel Novembre',
+      createdAt: now.toISOString(),
+      status: 'effectue'
+    },
+    {
+      id: 'exp_002',
+      date: `${yearStr}-${monthStr}-12`,
+      amount: 120,
+      category: 'carburant',
+      disburserName: 'Admin Principal',
+      recipientName: 'Station Shell Gombe',
+      justification: 'Plein carburant véhicule de fonction plaque 1234AB',
+      createdAt: now.toISOString(),
+      status: 'effectue'
+    },
+    {
+      id: 'exp_003',
+      date: `${yearStr}-${monthStr}-15`,
+      amount: 450,
+      category: 'loyer',
+      disburserName: 'Financier',
+      recipientName: 'Immo RDC',
+      justification: 'Loyer bureau étage 3',
+      createdAt: now.toISOString(),
+      status: 'effectue'
+    }
+  ];
+  localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+  return expenses;
+}
+
+function getDefaultBudgets(): ExpenseBudget[] {
+  const now = new Date();
+  const monthStr = (now.getMonth() + 1).toString().padStart(2, '0');
+  const yearStr = now.getFullYear().toString();
+
+  const budgets: ExpenseBudget[] = [
+    { month: monthStr, year: yearStr, category: 'salaire', amount: 5000 },
+    { month: monthStr, year: yearStr, category: 'carburant', amount: 500 },
+    { month: monthStr, year: yearStr, category: 'deplacement', amount: 1000 },
+    { month: monthStr, year: yearStr, category: 'loyer', amount: 450 },
+    { month: monthStr, year: yearStr, category: 'marketing', amount: 1200 },
+    { month: monthStr, year: yearStr, category: 'logistique', amount: 300 },
+    { month: monthStr, year: yearStr, category: 'maintenance', amount: 600 },
+    { month: monthStr, year: yearStr, category: 'divers', amount: 200 }
+  ];
+  localStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets));
+  return budgets;
 }

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Clock, ArrowRight } from 'lucide-react';
-import { getAllClients, getTodayVisitors } from '../lib/storage';
+import { Bell, Clock, ArrowRight, Sun, Moon } from 'lucide-react';
+import { getAllClients, getTodayVisitors, getAdminRole } from '../lib/storage';
 
 const titles: Record<string, string> = {
   '/': 'Tableau de bord',
@@ -21,6 +21,9 @@ export default function TopBar() {
   const pendingClients = clients.filter(c => c.statut === 'en_attente');
   const pending = pendingClients.length;
   const todayVisitors = getTodayVisitors();
+  const role = getAdminRole();
+  const userName = role === 'admin' ? 'Fleury Ngoma' : role === 'percepteur' ? 'Moïse Kapend' : 'Chantal Mboyo';
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('wairb_admin_theme') === 'dark');
 
   const [showNotifs, setShowNotifs] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,16 @@ export default function TopBar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('wairb_admin_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('wairb_admin_theme', 'light');
+    }
+  }, [isDark]);
 
   return (
     <header style={{
@@ -66,6 +79,19 @@ export default function TopBar() {
           <span style={{ color: 'var(--text-muted)' }}>Visiteurs aujourd'hui :</span>
           <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{todayVisitors}</span>
         </div>
+
+        {/* Theme Toggle */}
+        <button 
+          className="btn btn-ghost" 
+          style={{ 
+            width: 36, height: 36, padding: 0, display: 'flex', alignItems: 'center', 
+            justifyContent: 'center', borderRadius: 8,
+          }}
+          onClick={() => setIsDark(!isDark)}
+          title={isDark ? "Passer au mode clair" : "Passer au mode sombre"}
+        >
+          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
 
         {/* Notifications */}
         <div style={{ position: 'relative' }} ref={notifRef}>
@@ -137,6 +163,28 @@ export default function TopBar() {
               )}
             </div>
           )}
+        </div>
+
+        {/* User Profile */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          paddingLeft: 12, borderLeft: '1px solid var(--border)',
+          marginLeft: 4,
+        }}>
+          <div style={{ textAlign: 'right', display: 'block' }}>
+            <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{userName}</p>
+            <p style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 600, textTransform: 'capitalize' }}>{role}</p>
+          </div>
+          <div style={{
+            width: 38, height: 38, borderRadius: 10,
+            background: 'var(--accent-bg)',
+            border: '1px solid var(--accent-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 14, fontWeight: 700, color: 'var(--accent)',
+            flexShrink: 0,
+          }}>
+            {userName[0]}
+          </div>
         </div>
       </div>
     </header>
