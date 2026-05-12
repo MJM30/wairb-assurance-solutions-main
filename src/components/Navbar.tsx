@@ -28,16 +28,16 @@ const Navbar = ({ onRequestClick }: NavbarProps) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex flex-col">
       {/* Topbar */}
-      <div className="bg-primary text-primary-foreground text-xs md:text-sm py-2">
+      <div className="hero-gradient text-primary-foreground text-xs md:text-sm py-2">
         <div className="container flex justify-between items-center">
            <div className="flex items-center gap-4 md:gap-6 font-medium">
               <span className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity">
                 <Phone className="h-3.5 w-3.5" /> 
-                <span className="hidden sm:inline">+243 XX XXX XXXX</span>
+                <span className="hidden sm:inline">+243 822 135 376</span>
               </span>
               <span className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity">
                 <Mail className="h-3.5 w-3.5" /> 
-                <span className="hidden sm:inline">contact@wairbdrc.com</span>
+                <span className="hidden sm:inline">contact@wairb.com</span>
               </span>
            </div>
            <div>

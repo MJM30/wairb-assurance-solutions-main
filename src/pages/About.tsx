@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import MultiStepForm from "@/components/MultiStepForm";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Shield, Award, Target, Heart } from "lucide-react";
+import { ArrowRight, Users, Shield, Award, Target, Heart, Eye, Gem, CheckCircle2, TrendingUp } from "lucide-react";
 
 const About = () => {
   const [formOpen, setFormOpen] = useState(false);
@@ -44,10 +44,19 @@ const About = () => {
             </Reveal>
             <Reveal animation="reveal-left" delay={400}>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="rounded-full px-8 font-bold">
+                <Button 
+                  size="lg" 
+                  className="rounded-full px-8 font-bold"
+                  onClick={() => document.getElementById('valeurs')?.scrollIntoView({ behavior: 'smooth' })}
+                >
                   Nos Valeurs
                 </Button>
-                <Button size="lg" variant="outline" className="rounded-full px-8 font-bold text-white border-white hover:bg-white/10">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="rounded-full px-8 font-bold text-white border-white hover:bg-white/10"
+                  onClick={() => document.getElementById('gouvernance')?.scrollIntoView({ behavior: 'smooth' })}
+                >
                   Découvrir l'équipe
                 </Button>
               </div>
@@ -56,8 +65,160 @@ const About = () => {
         </div>
       </section>
 
+      {/* History & Timeline */}
+      <section className="py-24 bg-surface-sunken relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="container relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <Reveal animation="reveal-scale">
+              <span className="badge-primary mb-4">Notre Histoire</span>
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-6">Évolution & Croissance</h2>
+              <p className="text-muted-foreground">Découvrez le parcours de WAIRB, de sa fondation en Côte d'Ivoire à son expansion en RDC.</p>
+            </Reveal>
+          </div>
+
+          <div className="max-w-4xl mx-auto relative cursor-default">
+            {/* Vertical Line */}
+            <div className="absolute left-[15%] md:left-[50%] top-4 bottom-4 w-px bg-gradient-to-b from-primary/10 via-primary/50 to-primary/10 md:-translate-x-1/2"></div>
+            
+            <div className="space-y-24 relative">
+              {/* Event 1 */}
+              <div className="relative flex flex-col md:flex-row items-center justify-between group">
+                <div className="w-full md:w-1/2 pl-24 md:pl-0 md:pr-16 md:text-right relative">
+                  <Reveal animation="reveal-left">
+                    <h3 className="text-2xl font-bold mb-3 text-foreground">Fondation d'Origine</h3>
+                    <p className="text-muted-foreground leading-relaxed">Création de WAIRB à <strong className="text-primary">Abidjan, Côte d'Ivoire</strong>. Le début de notre engagement à fournir des solutions d'assurance indépendantes, innovantes et transparentes en Afrique.</p>
+                  </Reveal>
+                </div>
+                
+                <div className="absolute left-[15%] md:left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-background border-4 border-primary z-10 transition-all duration-500 shadow-[0_0_15px_rgba(var(--primary),0.3)] group-hover:scale-125 group-hover:bg-primary"></div>
+                
+                <div className="hidden md:block w-1/2 pl-16 text-left relative z-0">
+                  <span className="text-7xl md:text-8xl font-black text-primary/40 tracking-tighter select-none">2020</span>
+                </div>
+                {/* Mobile Furtive Date */}
+                <div className="block md:hidden absolute -left-2 top-10 opacity-40 text-6xl font-black -rotate-90 origin-left select-none pointer-events-none text-primary">
+                  2020
+                </div>
+              </div>
+
+              {/* Event 2 */}
+              <div className="relative flex flex-col md:flex-row items-center justify-between group">
+                <div className="hidden md:block w-1/2 pr-16 text-right relative z-0">
+                  <span className="text-7xl md:text-8xl font-black text-primary/40 tracking-tighter select-none">2025</span>
+                </div>
+                
+                <div className="absolute left-[15%] md:left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-background border-4 border-primary z-10 transition-all duration-500 shadow-[0_0_15px_rgba(var(--primary),0.3)] group-hover:scale-125 group-hover:bg-primary"></div>
+                
+                <div className="w-full md:w-1/2 pl-24 md:pl-16 text-left relative">
+                  <Reveal animation="reveal-right">
+                    <div className="inline-block bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-xs mb-3">Nouveau</div>
+                    <h3 className="text-2xl font-bold mb-3 text-foreground">Expansion en RDC</h3>
+                    <p className="text-muted-foreground leading-relaxed">Création de la sous-branche à <strong className="text-primary">Kinshasa (République Démocratique du Congo)</strong>. Une étape décisive pour nous rapprocher des marchés dynamiques d'Afrique centrale et renforcer notre présence continentale.</p>
+                  </Reveal>
+                </div>
+                {/* Mobile Furtive Date */}
+                <div className="block md:hidden absolute -left-10 top-20 opacity-40 text-6xl font-black -rotate-90 origin-left select-none pointer-events-none text-primary">
+                  2025
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission, Vision, Valeurs Section */}
+      <section id="valeurs" className="py-24 bg-white relative">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+            {/* Mission */}
+            <Reveal animation="reveal" delay={100}>
+              <div className="h-full p-8 rounded-3xl bg-surface-sunken border border-primary/5 hover:border-primary/20 transition-all duration-300 shadow-xl group">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Target className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-6">Mission</h3>
+                <p className="text-muted-foreground mb-6 font-medium">Accompagner les entreprises dans :</p>
+                <ul className="space-y-4">
+                  {[
+                    "L’identification et l’analyse des risques",
+                    "L’évaluation et la mise en place de couvertures adaptées",
+                    "L’optimisation des contrats d’assurance"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+
+            {/* Vision */}
+            <Reveal animation="reveal" delay={300}>
+              <div className="h-full p-8 rounded-3xl hero-gradient text-white shadow-2xl hover:shadow-primary/20 transition-all duration-300 group border border-white/10">
+                <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Eye className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-6">Vision</h3>
+                <p className="text-white/90 leading-relaxed text-lg italic">
+                  "Créer une marque africaine de référence en courtage, capable d’apporter des solutions innovantes et sur mesure en assurance Vie et Non-Vie."
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Valeurs */}
+            <Reveal animation="reveal" delay={500}>
+              <div className="h-full p-8 rounded-3xl bg-surface-sunken border border-primary/5 hover:border-primary/20 transition-all duration-300 shadow-xl group">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Gem className="h-8 w-8 text-accent-foreground" />
+                </div>
+                <h3 className="text-2xl font-bold mb-6">Valeurs</h3>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    "Professionnalisme",
+                    "Réactivité",
+                    "Engagement client",
+                    "Excellence",
+                    "Innovation"
+                  ].map((item, i) => (
+                    <div key={i} className="px-4 py-2 bg-white rounded-full border border-primary/10 text-sm font-bold shadow-sm flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Culture de performance */}
+            <Reveal animation="reveal" delay={700}>
+              <div className="h-full p-8 rounded-3xl hero-gradient text-white shadow-2xl hover:shadow-primary/20 transition-all duration-300 group border border-white/10">
+                <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-6">Culture de performance</h3>
+                <p className="text-white/80 mb-6 font-medium">WAIRB privilégie :</p>
+                <ul className="space-y-4">
+                  {[
+                    "Une approche orientée résultats",
+                    "Une gestion proactive des risques",
+                    "Une amélioration continue des services"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-white/60 shrink-0 mt-0.5" />
+                      <span className="text-white/90 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* Corporate Strategy & Governance */}
-      <section className="py-24 bg-surface-sunken">
+      <section id="gouvernance" className="py-24 bg-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Reveal animation="reveal-scale">
@@ -107,7 +268,7 @@ const About = () => {
       </section>
 
       {/* Executive Management */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-surface-sunken">
         <div className="container">
           <div className="flex flex-wrap -mx-4 items-center">
             <div className="w-full lg:w-1/2 px-4 mb-16 lg:mb-0">
@@ -172,7 +333,7 @@ const About = () => {
             <Reveal animation="reveal-scale">
               <span className="badge-primary mb-4">Nos Équipes</span>
               <h2 className="text-3xl md:text-4xl font-extrabold mb-6">Le Cœur de notre Société</h2>
-              <p className="text-muted-foreground">Une synergie de talents dévoués à votre protection financière.</p>
+              <p className="text-muted-foreground">WAIRB est composé d’une équipe jeune, dynamique et hautement qualifiée, disposant d’une solide expérience dans les métiers de l’assurance et de la réassurance.</p>
             </Reveal>
           </div>
 
@@ -238,11 +399,7 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: '30px 30px'
-        }} />
+      <section className="py-24 hero-gradient relative overflow-hidden">
         <div className="container relative z-10 text-center text-white">
           <Reveal animation="reveal-scale">
             <h2 className="text-3xl md:text-5xl font-extrabold mb-8">Prêt à sécuriser votre avenir avec nous ?</h2>

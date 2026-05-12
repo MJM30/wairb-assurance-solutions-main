@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Clock, ArrowRight, Sun, Moon } from 'lucide-react';
-import { getAllClients, getTodayVisitors, getAdminRole } from '../lib/storage';
+import { 
+  Bell, Clock, ArrowRight, Sun, Moon, 
+  User, Camera, X, Mail, Phone, MapPin, Key 
+} from 'lucide-react';
+import { getAllClients, getTodayVisitors, getAdminRole, getCurrentUser, saveUser, type WairbUser } from '../lib/storage';
 
 const titles: Record<string, string> = {
   '/': 'Tableau de bord',
@@ -22,11 +25,14 @@ export default function TopBar() {
   const pending = pendingClients.length;
   const todayVisitors = getTodayVisitors();
   const role = getAdminRole();
-  const userName = role === 'admin' ? 'Fleury Ngoma' : role === 'percepteur' ? 'Moïse Kapend' : 'Chantal Mboyo';
+  const [currentUser, setCurrentUser] = useState<WairbUser | null>(getCurrentUser());
+  const userName = currentUser?.name || (role === 'admin' ? 'Fleury Ngoma' : role === 'percepteur' ? 'Moïse Kapend' : 'Chantal Mboyo');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('wairb_admin_theme') === 'dark');
 
   const [showNotifs, setShowNotifs] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -47,6 +53,28 @@ export default function TopBar() {
       localStorage.setItem('wairb_admin_theme', 'light');
     }
   }, [isDark]);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && currentUser) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const updatedUser = { ...currentUser, avatar: reader.result as string };
+        saveUser(updatedUser);
+        setCurrentUser(updatedUser);
+        // Also update local users list if needed? saveUser already does it.
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpdateUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentUser && role === 'admin') {
+      saveUser(currentUser);
+      setShowProfileModal(false);
+    }
+  };
 
   return (
     <header style={{
@@ -166,11 +194,22 @@ export default function TopBar() {
         </div>
 
         {/* User Profile */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          paddingLeft: 12, borderLeft: '1px solid var(--border)',
-          marginLeft: 4,
-        }}>
+        <div 
+          onClick={() => {
+            const user = getCurrentUser();
+            if (user) {
+              setCurrentUser(user);
+              setShowProfileModal(true);
+            } else {
+              alert("Erreur: Impossible de charger le profil. Veuillez vous reconnecter.");
+            }
+          }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            paddingLeft: 12, borderLeft: '1px solid var(--border)',
+            marginLeft: 4, cursor: 'pointer'
+          }}
+        >
           <div style={{ textAlign: 'right', display: 'block' }}>
             <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{userName}</p>
             <p style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 600, textTransform: 'capitalize' }}>{role}</p>
@@ -181,12 +220,109 @@ export default function TopBar() {
             border: '1px solid var(--accent-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 14, fontWeight: 700, color: 'var(--accent)',
-            flexShrink: 0,
+            flexShrink: 0, overflow: 'hidden'
           }}>
-            {userName[0]}
+            {currentUser?.avatar ? (
+              <img src={currentUser.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              userName[0]
+            )}
           </div>
         </div>
       </div>
+
+      {/* Profile Modal */}
+      {showProfileModal && currentUser && (
+        <div className="modal-overlay" onClick={() => setShowProfileModal(false)}>
+          <div className="modal-box" style={{ maxWidth: 450, padding: 0, overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700 }}>Mon Profil</h3>
+              <button onClick={() => setShowProfileModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: 24 }}>
+              <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                <div style={{ position: 'relative', width: 100, height: 100, margin: '0 auto 12px' }}>
+                  <div style={{
+                    width: '100%', height: '100%', borderRadius: '50%',
+                    background: 'var(--accent-bg)', border: '2px solid var(--accent)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    overflow: 'hidden'
+                  }}>
+                    {currentUser.avatar ? (
+                      <img src={currentUser.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <span style={{ fontSize: 40, fontWeight: 800, color: 'var(--accent)' }}>{userName[0]}</span>
+                    )}
+                  </div>
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: 'var(--accent)', color: '#fff',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      border: '2px solid var(--bg-card)', cursor: 'pointer',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+                    }}
+                    title="Changer de photo"
+                  >
+                    <Camera size={16} />
+                  </button>
+                  <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={handleAvatarChange} />
+                </div>
+                <h4 style={{ fontSize: 18, fontWeight: 800 }}>{currentUser.name}</h4>
+                <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase' }}>{currentUser.role}</p>
+              </div>
+
+              <form onSubmit={handleUpdateUser} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6, display: 'block' }}>NOM COMPLET</label>
+                  <input 
+                    type="text" className="input" style={{ width: '100%' }}
+                    value={currentUser.name}
+                    onChange={e => setCurrentUser({ ...currentUser, name: e.target.value })}
+                    disabled={role !== 'admin'}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6, display: 'block' }}>EMAIL</label>
+                  <input 
+                    type="email" className="input" style={{ width: '100%' }}
+                    value={currentUser.email}
+                    onChange={e => setCurrentUser({ ...currentUser, email: e.target.value })}
+                    disabled={role !== 'admin'}
+                  />
+                </div>
+                {role === 'admin' && (
+                  <>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      <div>
+                        <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6, display: 'block' }}>TÉLÉPHONE</label>
+                        <input type="text" className="input" style={{ width: '100%' }} value={currentUser.phone || ''} onChange={e => setCurrentUser({...currentUser, phone: e.target.value})} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6, display: 'block' }}>MOT DE PASSE</label>
+                        <input type="password" className="input" style={{ width: '100%' }} value={currentUser.password} onChange={e => setCurrentUser({...currentUser, password: e.target.value})} />
+                      </div>
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
+                      Enregistrer les modifications
+                    </button>
+                  </>
+                )}
+                {role !== 'admin' && (
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic', marginTop: 8 }}>
+                    Seul l'administrateur peut modifier vos informations personnelles.
+                  </p>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

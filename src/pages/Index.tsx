@@ -5,6 +5,9 @@ import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import AboutStatsSection from "@/components/AboutStatsSection";
 import ProcessSection from "@/components/ProcessSection";
+import ArticlesSection from "@/components/ArticlesSection";
+import FaqSection from "@/components/FaqSection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import MultiStepForm from "@/components/MultiStepForm";
 
@@ -30,7 +33,10 @@ const Index = () => {
         <AboutStatsSection />
         <ProcessSection />
         <ServicesSection onSelectInsurance={openFormWithType} />
+        <ArticlesSection />
         <AboutSection />
+        <FaqSection />
+        <ContactSection />
       </main>
       <Footer />
       <MultiStepForm

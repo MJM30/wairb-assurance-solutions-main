@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import MultiStepForm from "@/components/MultiStepForm";
 import Reveal from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Award, Target, AlertTriangle } from "lucide-react";
 
 const NosSolutions = () => {
   const [formOpen, setFormOpen] = useState(false);
@@ -86,6 +86,76 @@ const NosSolutions = () => {
           </div>
         </section>
 
+        {/* Categories Section */}
+        <section className="py-24 bg-white">
+          <div className="container">
+            <Reveal animation="reveal" className="text-center mb-16">
+              <span className="badge-primary mb-4">Notre Catalogue</span>
+              <h2 className="text-3xl md:text-5xl font-extrabold mb-6">Explorez Nos Solutions</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Une gamme complète de produits d'assurance pour couvrir tous les aspects de votre vie personnelle et professionnelle.
+              </p>
+            </Reveal>
+
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Risques Ordinaires */}
+              <Reveal animation="reveal-left">
+                <div className="bg-surface-sunken p-8 md:p-10 rounded-[2.5rem] border border-primary/5 shadow-xl relative overflow-hidden h-full group">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                    <Shield className="w-24 h-24" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Target className="h-5 w-5 text-primary" />
+                    </div>
+                    Risques Ordinaires
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                    {[
+                      "Automobile", "Voyage", "Santé", "Tous Risques Chantier (TRC)", 
+                      "Incendie", "Multirisque Habitation", "Multirisque Professionnelle", 
+                      "Transport (corps et facultés)", "Risques techniques", 
+                      "Individuelle accident", "Risques divers"
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 group/item">
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0 opacity-60 group-hover/item:opacity-100 transition-opacity" />
+                        <span className="text-sm font-medium text-slate-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
+
+              {/* Risques Spéciaux */}
+              <Reveal animation="reveal-right">
+                <div className="hero-gradient p-8 md:p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden h-full group border border-white/10">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                    <Award className="w-24 h-24 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                      <AlertTriangle className="h-5 w-5 text-white" />
+                    </div>
+                    Risques Spéciaux
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                    {[
+                      "Violence politique & terrorisme (PVT)", "Cyber risques / cyber responsabilité", 
+                      "RC Mandataires Sociaux (RCMS)", "RC Décennale (RCD)", 
+                      "Crédits et cautions", "Assurance vie", "Aviation"
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 group/item">
+                        <CheckCircle2 className="h-4 w-4 text-white/40 shrink-0 group-hover/item:text-white/100 transition-colors" />
+                        <span className="text-sm font-medium text-white/90">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
         {/* Detailed Solutions */}
         {solutions.map((solution, index) => (
           <section 
@@ -142,10 +212,6 @@ const NosSolutions = () => {
 
         {/* Call to Action */}
         <section className="py-20 hero-gradient text-primary-foreground text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-            backgroundSize: '30px 30px'
-          }} />
           <div className="container relative z-10">
             <Reveal animation="reveal">
               <h2 className="text-3xl md:text-5xl font-extrabold mb-8 tracking-tight">

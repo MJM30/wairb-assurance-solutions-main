@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react';
-import { setAdminRole, type AdminRole } from '../lib/storage';
+import { setAdminRole, getAllUsers, type AdminRole, type WairbUser } from '../lib/storage';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,13 +16,13 @@ export default function Login() {
     setError('');
     setLoading(true);
     setTimeout(() => {
-      let role: AdminRole | null = null;
-      if (email === 'admin@wairbdrc.com' && password === 'Wairb@2024') role = 'admin';
-      else if (email === 'percepteur@wairbdrc.com' && password === 'Wairb@2024') role = 'percepteur';
-      else if (email === 'financier@wairbdrc.com' && password === 'Wairb@2024') role = 'financier';
+      const users = getAllUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+      let role: AdminRole | null = user ? user.role : null;
 
-      if (role) {
+      if (user && role) {
         localStorage.setItem('wairb_admin_auth', 'true');
+        localStorage.setItem('wairb_user_id', user.id);
         setAdminRole(role);
         // By default send to dashboard. We will redirect in App.tsx if needed
         navigate('/');
@@ -80,7 +80,7 @@ export default function Login() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 24px',
           }}>
-            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '60px' }} />
           </div>
           <h1 style={{
             fontSize: 22, fontWeight: 800,

@@ -69,7 +69,7 @@ const Contact = () => {
             
             {/* Form Column */}
             <Reveal animation="reveal-left">
-              <div className="bg-white p-8 md:p-10 rounded-3xl border border-primary/10 shadow-xl shadow-primary/5">
+              <div className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl shadow-black/30 border border-primary/5">
                 <h2 className="text-2xl font-bold mb-8">Envoyez-nous un message</h2>
                 
                 {isSuccess ? (
@@ -92,7 +92,7 @@ const Contact = () => {
                           required 
                           value={formState.nom}
                           onChange={handleChange}
-                          className="bg-surface-sunken border-transparent focus:bg-white transition-all h-12"
+                          className="bg-white/60 border border-white/80 transition-all h-12"
                         />
                       </div>
                       <div className="space-y-2">
@@ -103,7 +103,7 @@ const Contact = () => {
                           required 
                           value={formState.postNom}
                           onChange={handleChange}
-                          className="bg-surface-sunken border-transparent focus:bg-white transition-all h-12"
+                          className="bg-white/60 border border-white/80 transition-all h-12"
                         />
                       </div>
                     </div>
@@ -116,7 +116,7 @@ const Contact = () => {
                         required 
                         value={formState.prenom}
                         onChange={handleChange}
-                        className="bg-surface-sunken border-transparent focus:bg-white transition-all h-12"
+                        className="bg-white/60 border border-white/80 transition-all h-12"
                       />
                     </div>
                     
@@ -129,7 +129,7 @@ const Contact = () => {
                         required 
                         value={formState.email}
                         onChange={handleChange}
-                        className="bg-surface-sunken border-transparent focus:bg-white transition-all h-12"
+                        className="bg-white/60 border border-white/80 transition-all h-12"
                       />
                     </div>
                     
@@ -141,7 +141,7 @@ const Contact = () => {
                         required 
                         value={formState.adresse}
                         onChange={handleChange}
-                        className="bg-surface-sunken border-transparent focus:bg-white transition-all h-12"
+                        className="bg-white/60 border border-white/80 transition-all h-12"
                       />
                     </div>
                     
@@ -154,7 +154,7 @@ const Contact = () => {
                         rows={5}
                         value={formState.preoccupation}
                         onChange={handleChange}
-                        className="bg-surface-sunken border-transparent focus:bg-white transition-all resize-none"
+                        className="bg-white/60 border border-white/80 transition-all resize-none"
                       />
                     </div>
                     
@@ -182,8 +182,9 @@ const Contact = () => {
                         <Mail className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">E-mail</p>
-                        <p className="font-semibold break-all text-sm">contact@wairbdrc.com</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">E-mails</p>
+                        <p className="font-semibold break-all text-sm mb-1">contact@wairb.com</p>
+                        <p className="font-semibold break-all text-sm">fleury.ngoma@wairb.com</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-4 p-6 bg-surface-sunken rounded-2xl border border-primary/5">
@@ -191,18 +192,25 @@ const Contact = () => {
                         <Phone className="h-5 w-5 text-accent-foreground" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">Téléphone</p>
-                        <p className="font-semibold text-sm">+243 XX XXX XXXX</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">Téléphones</p>
+                        <p className="font-semibold text-sm mb-1">Kin: +243 822 135 376</p>
+                        <p className="font-semibold text-sm">Abj: +225 27 22 40 03</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4 p-6 bg-surface-sunken rounded-2xl border border-primary/5">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-1">
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-muted-foreground uppercase mb-1">Siège Social</p>
-                      <p className="font-semibold text-sm">Kinshasa, Gombe, République Démocratique du Congo</p>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">Kinshasa (RDC)</p>
+                        <p className="font-semibold text-sm leading-relaxed">Avenue des Aviateurs n°3<br/>Quartier de la Gare, Commune de la Gombe</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">Abidjan (RCI)</p>
+                        <p className="font-semibold text-sm leading-relaxed">Cocody Riviera Palmeraie<br/>3e étage, face à la Sodéc</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -210,10 +218,10 @@ const Contact = () => {
 
               <Reveal animation="reveal-scale" delay={200}>
                 <div className="space-y-4">
-                  <h2 className="text-2xl font-bold">Géo-localisation</h2>
-                  <div className="rounded-3xl overflow-hidden h-[400px] shadow-2xl border-4 border-white">
+                  <h2 className="text-2xl font-bold">Géo-localisation (Kinshasa)</h2>
+                  <div className="rounded-3xl overflow-hidden h-[400px] shadow-2xl border-4 border-white bg-slate-50">
                     <iframe 
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127263.6019576408!2d15.22806555!3d-4.393437299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a6a312019777bd7%3A0xc3bad885078170c4!2sKinshasa%2C%20Democratic%20Republic%20of%20the%20Congo!5e0!3m2!1sen!2s!4v1711055000000!5m2!1sen!2s" 
+                      src="https://www.google.com/maps?q=Avenue+des+Aviateurs+3,+Gombe,+Kinshasa&output=embed" 
                       width="100%" 
                       height="100%" 
                       style={{ border: 0 }} 

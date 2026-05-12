@@ -4,12 +4,70 @@
 
 export type AdminRole = 'admin' | 'percepteur' | 'financier';
 
+export interface WairbUser {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: AdminRole;
+  phone?: string;
+  address?: string;
+  avatar?: string;
+  createdAt: string;
+}
+
 export function getAdminRole(): AdminRole {
   return (localStorage.getItem('wairb_admin_role') as AdminRole) || 'admin';
 }
 
 export function setAdminRole(role: AdminRole): void {
   localStorage.setItem('wairb_admin_role', role);
+}
+
+export function getCurrentUser(): WairbUser | null {
+  const userId = localStorage.getItem('wairb_user_id');
+  const users = getAllUsers();
+  
+  if (userId) {
+    return users.find(u => u.id === userId) || null;
+  }
+  
+  // Fallback: if no ID but role exists, find by role (for existing sessions)
+  const role = getAdminRole();
+  return users.find(u => u.role === role) || null;
+}
+
+// ─── Users ──────────────────────────────────────────────────
+
+export function getAllUsers(): WairbUser[] {
+  const raw = localStorage.getItem(USERS_KEY);
+  if (!raw) return getDefaultUsers();
+  try {
+    return JSON.parse(raw) as WairbUser[];
+  } catch { return getDefaultUsers(); }
+}
+
+export function saveUser(user: WairbUser): void {
+  const users = getAllUsers();
+  const idx = users.findIndex(u => u.id === user.id);
+  if (idx >= 0) users[idx] = user;
+  else users.push(user);
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+export function deleteUser(id: string): void {
+  const users = getAllUsers().filter(u => u.id !== id);
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function getDefaultUsers(): WairbUser[] {
+  const users: WairbUser[] = [
+    { id: 'usr_001', name: 'Fleury Ngoma', email: 'admin@wairbdrc.com', password: 'Wairb@2024', role: 'admin', phone: '+243 812 345 678', address: 'Gombe, Kinshasa', createdAt: new Date().toISOString() },
+    { id: 'usr_002', name: 'Moïse Kapend', email: 'percepteur@wairbdrc.com', password: 'Wairb@2024', role: 'percepteur', phone: '+243 899 123 456', address: 'Ngaliema, Kinshasa', createdAt: new Date().toISOString() },
+    { id: 'usr_003', name: 'Chantal Mboyo', email: 'financier@wairbdrc.com', password: 'Wairb@2024', role: 'financier', phone: '+243 821 555 777', address: 'Limete, Kinshasa', createdAt: new Date().toISOString() },
+  ];
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  return users;
 }
 
 export function generateMatricule(typeId: string): string {
@@ -50,6 +108,7 @@ const VISITORS_KEY = 'wairb_visitors';
 const EXPENSES_KEY = 'wairb_expenses';
 const BUDGETS_KEY = 'wairb_expense_budgets';
 const INSURER_EMAIL_KEY = 'wairb_insurer_email';
+const USERS_KEY = 'wairb_users';
 
 export type ExpenseCategory = 'salaire' | 'carburant' | 'deplacement' | 'loyer' | 'marketing' | 'logistique' | 'maintenance' | 'divers';
 

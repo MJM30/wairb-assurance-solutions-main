@@ -9,6 +9,7 @@ import Partners from './pages/Partners';
 import Budget from './pages/Budget';
 import Expenses from './pages/Expenses';
 import Visitors from './pages/Visitors';
+import Users from './pages/Users';
 import { getAdminRole } from './lib/storage';
 
 function isAuthenticated() {
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="budget" element={<Budget />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="visiteurs" element={<Visitors />} />
+          <Route path="utilisateurs" element={<Users />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

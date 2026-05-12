@@ -17,6 +17,7 @@ export default {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
+        white: "#e8ebe9", // Gris un peu plus sombre avec une touche de vert
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

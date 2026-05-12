@@ -1,4 +1,4 @@
-import { Home, Building2, AlertTriangle, Car, ArrowRight } from "lucide-react";
+import { Home, Building2, AlertTriangle, Car, ArrowRight, Target } from "lucide-react";
 import Reveal from "./Reveal";
 
 interface ServicesSectionProps {
@@ -56,44 +56,85 @@ const ServicesSection = ({ onSelectInsurance }: ServicesSectionProps) => {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {services.map((service, index) => (
-            <Reveal 
-              key={service.id} 
-              animation="reveal-scale" 
-              delay={index * 100}
-            >
-              <div
-                className="group hero-gradient border border-primary-foreground/10 rounded-xl p-6 card-shadow hover:card-shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden h-full"
-                onClick={() => onSelectInsurance(service.id)}
-              >
-                {/* Subtle pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity" style={{
-                  backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-                  backgroundSize: '20px 20px'
-                }} />
-                
-                <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-11 h-11 rounded-lg bg-primary-foreground/10 flex items-center justify-center">
-                      <service.icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="badge-primary px-2 py-0.5 rounded-full text-[10px] bg-primary-foreground/10 text-primary border border-primary-foreground/5">{service.badge}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+          {/* Risques Ordinaires */}
+          <Reveal animation="reveal-left">
+            <div className="group h-full bg-white border border-primary/5 rounded-[2rem] p-8 md:p-10 card-shadow hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+              <div className="absolute -right-4 -top-4 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Target className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-sm font-bold text-primary-foreground mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="text-xs text-primary-foreground/70 leading-relaxed mb-4">
-                    {service.description}
-                  </p>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:gap-2.5 transition-all">
-                    Faire une demande
-                    <ArrowRight className="h-3.5 w-3.5" />
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground">Risques Ordinaires</h3>
+                    <p className="text-xs text-muted-foreground">Solutions d'assurance quotidiennes</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    "Automobile", "Voyage", "Santé", "Incendie", "Multirisque Habitation", 
+                    "Multirisque Professionnelle", "Transport", "Risques techniques"
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="text-sm text-muted-foreground font-medium">{item}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2 text-primary text-xs font-bold mt-2">
+                    Et bien plus encore...
+                  </div>
+                </div>
+
+                <div className="mt-10 pt-8 border-t border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-primary group-hover:gap-3 transition-all cursor-pointer" onClick={() => onSelectInsurance("ordinaire")}>
+                    Voir tout le catalogue
+                    <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
+
+          {/* Risques Spéciaux */}
+          <Reveal animation="reveal-right">
+            <div className="group h-full hero-gradient rounded-[2rem] p-8 md:p-10 card-shadow hover:shadow-primary/20 transition-all duration-500 relative overflow-hidden border border-white/10">
+              <div className="absolute -right-4 -top-4 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors" />
+              
+              <div className="relative z-10 text-white">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                    <AlertTriangle className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Risques Spéciaux</h3>
+                    <p className="text-xs text-white/60">Expertise technique & haut de gamme</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    "Violence politique (PVT)", "Cyber risques", "RC Mandataires (RCMS)", 
+                    "RC Décennale (RCD)", "Assurance vie", "Aviation", "Crédits et cautions"
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                      <span className="text-sm text-white/80 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-10 pt-8 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white group-hover:gap-3 transition-all cursor-pointer" onClick={() => onSelectInsurance("special")}>
+                    Demander une expertise
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

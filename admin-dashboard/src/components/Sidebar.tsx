@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, CheckCircle, BarChart3,
-  Handshake, Wallet, Activity, LogOut, Shield,
+  Handshake, Wallet, Activity, LogOut, Shield, UserPlus
 } from 'lucide-react';
-import { getAdminRole } from '../lib/storage';
+import { getAdminRole, getCurrentUser } from '../lib/storage';
 
 const allNavItems = [
   { to: '/', icon: LayoutDashboard, label: 'Tableau de bord', end: true, roles: ['admin', 'financier'] },
+  { to: '/utilisateurs', icon: UserPlus, label: 'Gestion des comptes', roles: ['admin'] },
   { to: '/clients', icon: Users, label: 'Tous les clients', roles: ['admin', 'percepteur'] },
   { to: '/clients-payes', icon: CheckCircle, label: 'Clients payés', roles: ['admin', 'financier'] },
   { to: '/assurances', icon: BarChart3, label: 'Assurances', roles: ['admin', 'financier'] },
@@ -27,11 +28,8 @@ export default function Sidebar() {
   const roleMails: Record<string, string> = {
     admin: 'admin@wairbdrc.com', percepteur: 'percepteur@wairbdrc.com', financier: 'financier@wairbdrc.com'
   };
-  const userNames: Record<string, string> = {
-    admin: 'Fleury Ngoma',
-    percepteur: 'Moïse Kapend',
-    financier: 'Chantal Mboyo'
-  };
+  const user = getCurrentUser();
+  const userName = user?.name || (role === 'admin' ? 'Fleury Ngoma' : role === 'percepteur' ? 'Moïse Kapend' : 'Chantal Mboyo');
 
   function handleLogout() {
     localStorage.removeItem('wairb_admin_auth');
@@ -59,7 +57,7 @@ export default function Sidebar() {
             height: 60,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src="/images/img_logo.jpeg" alt="WAIRB Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '60px' }} />
           </div>
           <div style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Administration
@@ -101,9 +99,14 @@ export default function Sidebar() {
               borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 13, fontWeight: 700, color: '#fff',
-            }}>{roleLabels[role]?.[0] || 'A'}</div>
+              overflow: 'hidden'
+            }}>{user?.avatar ? (
+              <img src={user.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              userName[0]
+            )}</div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{userNames[role]}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{userName}</div>
               <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{roleLabels[role]}</div>
             </div>
           </div>

@@ -51,7 +51,7 @@ const AboutStatsSection = () => {
               </Reveal>
               <Reveal animation="reveal-right" delay={400}>
                 <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-                  Au-delà du simple courtage, nous devenons votre partenaire stratégique pour anticiper les risques et protéger vos actifs les plus précieux. Notre approche personnalisée garantit une tranquillité d'esprit totale.
+                  WEST AFRICAN INSURANCE AND REINSURANCE BROKERS (WAIRB) est une société africaine spécialisée dans le courtage en assurances et en réassurance, intervenant en zone CIMA et hors CIMA.
                 </p>
               </Reveal>
               <div className="flex flex-wrap -mx-4 mb-10">
