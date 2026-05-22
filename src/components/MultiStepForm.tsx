@@ -8,6 +8,12 @@ import HabitationForm from "@/components/forms/HabitationForm";
 import ProfessionnelleForm from "@/components/forms/ProfessionnelleForm";
 import PVTForm from "@/components/forms/PVTForm";
 import AutoForm from "@/components/forms/AutoForm";
+import CautionForm from "@/components/forms/CautionForm";
+import SanteForm from "@/components/forms/SanteForm";
+import RCManifestationForm from "@/components/forms/RCManifestationForm";
+import RCProfessionnelleForm from "@/components/forms/RCProfessionnelleForm";
+import TousRisquesChantiersForm from "@/components/forms/TousRisquesChantiersForm";
+import ManipulationProduitsPetroliersForm from "@/components/forms/ManipulationProduitsPetroliersForm";
 
 interface MultiStepFormProps {
   open: boolean;
@@ -27,6 +33,12 @@ const TYPE_LABELS: Record<string, string> = {
   professionnelle: "Multirisque Professionnelle",
   pvt: "Violence Politique & Terrorisme",
   auto: "Assurance Automobile",
+  caution: "Caution",
+  sante: "Assurance Santé",
+  rc_manifestation: "RC Manifestation",
+  rc_pro: "RC Professionnelle",
+  trc: "Tous Risques Chantiers",
+  petrole: "Produits Pétroliers",
 };
 
 // Sauvegarde le client dans localStorage pour le tableau de bord admin
@@ -150,6 +162,24 @@ const MultiStepForm = ({ open, onClose, preselectedType }: MultiStepFormProps) =
               )}
               {step === 3 && insuranceType === "auto" && (
                 <AutoForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "caution" && (
+                <CautionForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "sante" && (
+                <SanteForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "rc_manifestation" && (
+                <RCManifestationForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "rc_pro" && (
+                <RCProfessionnelleForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "trc" && (
+                <TousRisquesChantiersForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "petrole" && (
+                <ManipulationProduitsPetroliersForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
               )}
             </>
           )}

@@ -1,4 +1,4 @@
-import { Home, Building2, AlertTriangle, Car, ArrowLeft, ArrowRight } from "lucide-react";
+import { Home, Building2, AlertTriangle, Car, ArrowLeft, ArrowRight, ShieldCheck, HeartPulse, Users, Briefcase, Wrench, Droplet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const types = [
@@ -6,6 +6,12 @@ const types = [
   { id: "professionnelle", icon: Building2, title: "Multirisque Professionnelle", desc: "Protection entreprise", badge: "Entreprise" },
   { id: "pvt", icon: AlertTriangle, title: "Violence Politique & Terrorisme", desc: "Risques spéciaux (PVT)", badge: "Spécialisé" },
   { id: "auto", icon: Car, title: "Assurance Automobile", desc: "Véhicules et RC auto", badge: "Véhicule" },
+  { id: "caution", icon: ShieldCheck, title: "Caution", desc: "Garanties et cautions", badge: "Entreprise" },
+  { id: "sante", icon: HeartPulse, title: "Assurance Santé", desc: "Couverture médicale", badge: "Particulier/Entreprise" },
+  { id: "rc_manifestation", icon: Users, title: "RC Manifestation", desc: "Événements et manifestations", badge: "Spécialisé" },
+  { id: "rc_pro", icon: Briefcase, title: "RC Professionnelle", desc: "Responsabilité Civile Pro", badge: "Entreprise" },
+  { id: "trc", icon: Wrench, title: "Tous Risques Chantiers", desc: "Chantiers et construction", badge: "Entreprise" },
+  { id: "petrole", icon: Droplet, title: "Produits Pétroliers", desc: "Manipulation produits pétroliers", badge: "Spécialisé" },
 ];
 
 interface InsuranceTypeSelectorProps {

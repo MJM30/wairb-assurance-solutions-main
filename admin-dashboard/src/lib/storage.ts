@@ -74,7 +74,11 @@ export function generateMatricule(typeId: string): string {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const r1 = Math.floor(Math.random() * 9000) + 1000;
   const r2 = letters[Math.floor(Math.random() * letters.length)];
-  const pre = typeId === 'habitation' ? 'HA' : typeId === 'auto' ? 'AU' : typeId === 'professionnelle' ? 'PR' : 'PV';
+  const map: Record<string, string> = {
+    habitation: 'HA', auto: 'AU', professionnelle: 'PR', pvt: 'PV',
+    caution: 'CA', sante: 'SA', rc_manifestation: 'RM', rc_pro: 'RP', trc: 'TC', petrole: 'PE'
+  };
+  const pre = map[typeId] ?? 'XX';
   return `WAIRB-${pre}${r1}${r2}`;
 }
 
@@ -182,6 +186,12 @@ export function getMontantByType(type: string): number {
     professionnelle: 1200,
     pvt: 2500,
     auto: 380,
+    caution: 800,
+    sante: 600,
+    rc_manifestation: 300,
+    rc_pro: 1000,
+    trc: 3500,
+    petrole: 5000,
   };
   return prices[type] ?? 500;
 }
@@ -228,6 +238,12 @@ export function getTypeLabel(id: string): string {
     professionnelle: 'Multirisque Professionnelle',
     pvt: 'Violence Politique & Terrorisme',
     auto: 'Assurance Automobile',
+    caution: 'Caution',
+    sante: 'Assurance Santé',
+    rc_manifestation: 'RC Manifestation',
+    rc_pro: 'RC Professionnelle',
+    trc: 'Tous Risques Chantiers',
+    petrole: 'Produits Pétroliers',
   };
   return map[id] ?? id;
 }

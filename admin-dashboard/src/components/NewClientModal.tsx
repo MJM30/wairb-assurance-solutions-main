@@ -9,6 +9,12 @@ import HabitationForm from './forms/HabitationForm';
 import ProfessionnelleForm from './forms/ProfessionnelleForm';
 import PVTForm from './forms/PVTForm';
 import AutoForm from './forms/AutoForm';
+import CautionForm from './forms/CautionForm';
+import SanteForm from './forms/SanteForm';
+import RCManifestationForm from './forms/RCManifestationForm';
+import RCProfessionnelleForm from './forms/RCProfessionnelleForm';
+import TousRisquesChantiersForm from './forms/TousRisquesChantiersForm';
+import ManipulationProduitsPetroliersForm from './forms/ManipulationProduitsPetroliersForm';
 
 interface NewClientModalProps {
   onClose: () => void;
@@ -133,6 +139,24 @@ export default function NewClientModal({ onClose, onRefresh }: NewClientModalPro
               )}
               {step === 3 && insuranceType === "auto" && (
                 <AutoForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "caution" && (
+                <CautionForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "sante" && (
+                <SanteForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "rc_manifestation" && (
+                <RCManifestationForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "rc_pro" && (
+                <RCProfessionnelleForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "trc" && (
+                <TousRisquesChantiersForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
+              )}
+              {step === 3 && insuranceType === "petrole" && (
+                <ManipulationProduitsPetroliersForm onBack={() => setStep(2)} onSubmit={handleSubmit} />
               )}
             </>
           )}

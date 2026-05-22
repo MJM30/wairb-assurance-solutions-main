@@ -34,9 +34,9 @@ const Index = () => {
         <ProcessSection />
         <ServicesSection onSelectInsurance={openFormWithType} />
         <ArticlesSection />
-        <AboutSection />
         <FaqSection />
         <ContactSection />
+        <AboutSection />
       </main>
       <Footer />
       <MultiStepForm
